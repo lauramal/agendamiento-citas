@@ -96,6 +96,7 @@ agendamiento-citas/
 │   ├── static/index.html        # Página accesible del paciente
 │   └── jobs.py                  # Recordatorios y vencimiento de ofertas
 │
+├── .claude/skills/              # Skills: nueva regla de negocio y registrar decisión
 ├── tests/                       # 33 pruebas automáticas
 ├── docs/decisiones.md           # Cada decisión con sus alternativas
 ├── scripts/semilla.py           # Datos de demostración
@@ -340,6 +341,17 @@ DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/citas_test py
 | Correo | El enlace no actúa al abrirse; enlaces alterados rechazados |
 | Agente | No toca citas ajenas; recibe el motivo cuando la base rechaza |
 | Notificaciones | Recordatorios sin duplicados, respaldo de canal, modo demostración |
+
+---
+
+## Skills del Proyecto
+
+Las tareas que se repiten en este repositorio están escritas como skills en `.claude/skills/`. Un skill es una carpeta con instrucciones que el agente carga solo cuando la tarea las necesita, en lugar de tenerlas siempre en el contexto.
+
+| Skill | Cuándo se usa | Por qué existe |
+|---|---|---|
+| `nueva-regla-de-negocio` | Al agregar una validación o restricción | Una regla toca cuatro lugares: esquema, mensaje de error, servicio y pruebas. Es fácil olvidar uno. El skill fija el orden y la regla de que lo que pueda vivir en la base de datos no se valide solo en el código. Incluye las trampas que ya aparecieron al construir el proyecto |
+| `registrar-decision` | Al tomar o documentar una decisión de diseño | Mantiene `docs/decisiones.md` con un solo formato y obliga a registrar la alternativa descartada, que es lo que da valor a cada decisión |
 
 ---
 
