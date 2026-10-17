@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mis citas médicas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #f3f6f4; --tinta: #17262e; --suave: #4a5a62; --borde: #cfdad5;
+    --verde: #1f6f54; --verde-claro: #e3efe9; --foco: #f2b705; --papel: #ffffff;
+    --escala: 1;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: calc(19px * var(--escala)); }
+  body { margin: 0; background: var(--fondo); color: var(--tinta);
+         font-family: "Atkinson Hyperlegible", Verdana, Arial, sans-serif; line-height: 1.55; }
+  .marco { max-width: 680px; margin: 0 auto; padding: 1.4rem 1.1rem 3rem; }
+  header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: .4rem 0; }
+  .tam { display: flex; gap: .4rem; }
+  .tam button { min-width: 3.2rem; padding: .5rem .7rem; font-size: 1rem; background: var(--papel);
+                color: var(--tinta); border: 2px solid var(--borde); border-radius: 10px; cursor: pointer; }
+  p.guia { color: var(--suave); margin-top: 0; }
+  label { display: block; font-weight: 700; margin: 1.2rem 0 .4rem; }
+  input, textarea { width: 100%; font: inherit; font-size: 1.15rem; padding: .85rem 1rem;
+                    border: 2px solid var(--borde); border-radius: 12px; background: var(--papel); color: var(--tinta); }
+  .principal { width: 100%; font: inherit; font-size: 1.2rem; font-weight: 700; color: #fff;
+               background: var(--verde); border: 0; border-radius: 12px; padding: 1rem; margin-top: .9rem; cursor: pointer; }
+  :focus-visible { outline: 4px solid var(--foco); outline-offset: 3px; }
+  .atajos { display: grid; gap: .6rem; margin: 1.2rem 0; }
+  .atajos button { text-align: left; font: inherit; font-size: 1.1rem; padding: 1rem 1.1rem; cursor: pointer;
+                   background: var(--papel); color: var(--tinta); border: 2px solid var(--borde); border-radius: 12px; }
+  .atajos button:hover { border-color: var(--verde); }
+  .conversacion { display: flex; flex-direction: column; gap: .8rem; margin: 1.2rem 0; }
+  .burbuja { padding: .9rem 1.1rem; border-radius: 14px; max-width: 92%; white-space: pre-wrap; }
+  .sofia { background: var(--papel); border: 2px solid var(--borde); align-self: flex-start; }
+  .yo { background: var(--verde-claro); align-self: flex-end; }
+  .quien { font-size: .85rem; font-weight: 700; color: var(--suave); display: block; margin-bottom: .2rem; }
+  .ayuda { margin-top: 2rem; padding: 1rem 1.1rem; border-left: 6px solid var(--verde); background: var(--papel); border-radius: 0 12px 12px 0; }
+  .oculto { display: none; }
+  @media (prefers-reduced-motion: no-preference) { .burbuja { animation: aparece .2s ease-out; } }
+  @keyframes aparece { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div class="marco">
+  <header>
+    <h1>Mis citas médicas</h1>
+    <div class="tam" role="group" aria-label="Tamaño de la letra">
+      <button type="button" onclick="tam(-0.1)" aria-label="Letra más pequeña">A−</button>
+      <button type="button" onclick="tam(0.1)" aria-label="Letra más grande">A+</button>
+    </div>
+  </header>
+
+  <section id="entrada">
+    <p class="guia">Hable con Sofía para pedir, revisar o cancelar sus citas. Escriba como le hablaría a una persona.</p>
+    <form onsubmit="entrar(event)">
+      <label for="doc">Su número de documento</label>
+      <input id="doc" inputmode="numeric" autocomplete="off" required placeholder="Por ejemplo: 41000111">
+      <button class="principal">Empezar</button>
+    </form>
+  </section>
+
+  <section id="chat" class="oculto" aria-live="polite">
+    <div class="atajos" role="group" aria-label="Lo que puede hacer">
+      <button type="button" onclick="enviarTexto('Quiero pedir una cita')">Pedir una cita</button>
+      <button type="button" onclick="enviarTexto('¿Qué citas tengo?')">Ver mis citas</button>
+      <button type="button" onclick="enviarTexto('Necesito cancelar una cita')">Cancelar una cita</button>
+    </div>
+    <div class="conversacion" id="conversacion"></div>
+    <form onsubmit="enviar(event)">
+      <label for="msg">Su mensaje</label>
+      <textarea id="msg" rows="2" required></textarea>
+      <button class="principal" id="btnEnviar">Enviar</button>
+    </form>
+  </section>
+
+  <div class="ayuda">¿Prefiere que lo atienda una persona? Llame al <strong>601 555 0101</strong>, de lunes a viernes de 7 a. m. a 5 p. m.</div>
+</div>
+<script>
+  let documento = null, conversacion = null, escala = 1;
+  function tam(d) { escala = Math.min(1.6, Math.max(0.9, escala + d)); document.documentElement.style.setProperty('--escala', escala); }
+  function burbuja(texto, quien) {
+    const b = document.createElement('div');
+    b.className = 'burbuja ' + (quien === 'Sofía' ? 'sofia' : 'yo');
+    const q = document.createElement('span'); q.className = 'quien'; q.textContent = quien;
+    b.append(q, document.createTextNode(texto));
+    document.getElementById('conversacion').append(b);
+    b.scrollIntoView({ block: 'end' });
+  }
+  function entrar(e) {
+    e.preventDefault();
+    documento = document.getElementById('doc').value.trim();
+    document.getElementById('entrada').classList.add('oculto');
+    document.getElementById('chat').classList.remove('oculto');
+    enviarTexto('Hola');
+  }
+  function enviar(e) {
+    e.preventDefault();
+    const c = document.getElementById('msg'); const t = c.value.trim();
+    if (t) { c.value = ''; enviarTexto(t); }
+  }
+  async function enviarTexto(texto) {
+    if (texto !== 'Hola') burbuja(texto, 'Usted');
+    const btn = document.getElementById('btnEnviar'); btn.disabled = true; btn.textContent = 'Sofía está escribiendo…';
+    try {
+      const r = await fetch('/agente/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ documento, mensaje: texto, conversacion_id: conversacion }) });
+      const d = await r.json();
+      if (!r.ok) { burbuja(d.detalle || 'No fue posible responder en este momento.', 'Sofía'); return; }
+      conversacion = d.conversacion_id; burbuja(d.respuesta, 'Sofía');
+    } catch { burbuja('No hay conexión en este momento. Intente de nuevo o llámenos.', 'Sofía'); }
+    finally { btn.disabled = false; btn.textContent = 'Enviar'; }
+  }
+</script>
+</body>
+</html>
