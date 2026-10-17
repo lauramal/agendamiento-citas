@@ -1,0 +1,14 @@
+fastapi==0.143.3
+uvicorn[standard]==0.54.0
+sqlalchemy==2.1.5
+psycopg[binary]==3.3.6
+pydantic-settings==2.16.0
+email-validator==2.3.0
+itsdangerous==2.2.0
+apscheduler==3.11.3
+langchain==1.4.6
+langchain-anthropic==1.7.6
+langgraph==1.2.16
+# pruebas
+pytest==9.1.1
+httpx==0.28.1

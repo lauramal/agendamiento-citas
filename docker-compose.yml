@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: citas
+    ports: ["5432:5432"]
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d:ro   # el esquema con sus reglas se crea al iniciar
+      - datos:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d citas"]
+      interval: 3s
+      retries: 20
+
+  mailpit:   # captura los correos para verlos en http://localhost:8025
+    image: axllent/mailpit:latest
+    ports: ["8025:8025", "1025:1025"]
+
+  api:
+    build: .
+    env_file: .env
+    ports: ["8000:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+      mailpit: { condition: service_started }
+
+volumes:
+  datos:
