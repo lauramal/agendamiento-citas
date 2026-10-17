@@ -33,6 +33,6 @@ def chat(datos: Mensaje, db: Session = Depends(get_db)):
                                                 Paciente.activo.is_(True)))
     if not paciente:
         raise ErrorNegocio("No encontramos un paciente con ese documento.", 404)
-    from app.agente.sofia import conversar   # import diferido: la API no depende del LLM para arrancar
+    from app.agente.nora import conversar   # import diferido: la API no depende del LLM para arrancar
     conv = datos.conversacion_id or uuid.uuid4().hex[:12]
     return Respuesta(respuesta=conversar(paciente.id, datos.mensaje, conv), conversacion_id=conv)

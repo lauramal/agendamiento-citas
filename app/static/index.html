@@ -35,7 +35,7 @@
   .atajos button:hover { border-color: var(--verde); }
   .conversacion { display: flex; flex-direction: column; gap: .8rem; margin: 1.2rem 0; }
   .burbuja { padding: .9rem 1.1rem; border-radius: 14px; max-width: 92%; white-space: pre-wrap; }
-  .sofia { background: var(--papel); border: 2px solid var(--borde); align-self: flex-start; }
+  .nora { background: var(--papel); border: 2px solid var(--borde); align-self: flex-start; }
   .yo { background: var(--verde-claro); align-self: flex-end; }
   .quien { font-size: .85rem; font-weight: 700; color: var(--suave); display: block; margin-bottom: .2rem; }
   .ayuda { margin-top: 2rem; padding: 1rem 1.1rem; border-left: 6px solid var(--verde); background: var(--papel); border-radius: 0 12px 12px 0; }
@@ -55,7 +55,7 @@
   </header>
 
   <section id="entrada">
-    <p class="guia">Hable con Sofía para pedir, revisar o cancelar sus citas. Escriba como le hablaría a una persona.</p>
+    <p class="guia">Hable con Nora para pedir, revisar o cancelar sus citas. Escriba como le hablaría a una persona.</p>
     <form onsubmit="entrar(event)">
       <label for="doc">Su número de documento</label>
       <input id="doc" inputmode="numeric" autocomplete="off" required placeholder="Por ejemplo: 41000111">
@@ -84,7 +84,7 @@
   function tam(d) { escala = Math.min(1.6, Math.max(0.9, escala + d)); document.documentElement.style.setProperty('--escala', escala); }
   function burbuja(texto, quien) {
     const b = document.createElement('div');
-    b.className = 'burbuja ' + (quien === 'Sofía' ? 'sofia' : 'yo');
+    b.className = 'burbuja ' + (quien === 'Nora' ? 'nora' : 'yo');
     const q = document.createElement('span'); q.className = 'quien'; q.textContent = quien;
     b.append(q, document.createTextNode(texto));
     document.getElementById('conversacion').append(b);
@@ -104,14 +104,14 @@
   }
   async function enviarTexto(texto) {
     if (texto !== 'Hola') burbuja(texto, 'Usted');
-    const btn = document.getElementById('btnEnviar'); btn.disabled = true; btn.textContent = 'Sofía está escribiendo…';
+    const btn = document.getElementById('btnEnviar'); btn.disabled = true; btn.textContent = 'Nora está escribiendo…';
     try {
       const r = await fetch('/agente/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ documento, mensaje: texto, conversacion_id: conversacion }) });
       const d = await r.json();
-      if (!r.ok) { burbuja(d.detalle || 'No fue posible responder en este momento.', 'Sofía'); return; }
-      conversacion = d.conversacion_id; burbuja(d.respuesta, 'Sofía');
-    } catch { burbuja('No hay conexión en este momento. Intente de nuevo o llámenos.', 'Sofía'); }
+      if (!r.ok) { burbuja(d.detalle || 'No fue posible responder en este momento.', 'Nora'); return; }
+      conversacion = d.conversacion_id; burbuja(d.respuesta, 'Nora');
+    } catch { burbuja('No hay conexión en este momento. Intente de nuevo o llámenos.', 'Nora'); }
     finally { btn.disabled = false; btn.textContent = 'Enviar'; }
   }
 </script>

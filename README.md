@@ -1,4 +1,4 @@
-# 🩺 Agendamiento de Citas Médicas
+# Agendamiento de Citas Médicas
 
 **Una sola fuente de cupos para todos los canales, con un asistente conversacional que recupera las citas que se iban a perder**
 
@@ -13,39 +13,39 @@ Sistema para gestionar sedes, salas, médicos, pacientes y citas, donde ningún 
 
 ---
 
-## 🔍 El problema detrás del enunciado
+## El problema detrás del enunciado
 
 El enunciado pide un CRUD con citas y validaciones. Antes de diseñar me pregunté por qué el agendamiento falla en la práctica:
 
-- **📉 Cupos perdidos.** La gente no avisa que no va, mientras otros esperan turno sin conseguirlo.
-- **🔀 Inventario por canal.** Por WhatsApp "hay más citas" que en la web. No es un problema de la app: cada canal reparte cupos por su lado.
-- **👵 Apps que excluyen.** Los adultos mayores, que más citas necesitan, son quienes menos saben usarlas.
+- **Cupos perdidos.** La gente no avisa que no va, mientras otros esperan turno sin conseguirlo.
+- **Inventario por canal.** Por WhatsApp "hay más citas" que en la web. No es un problema de la app: cada canal reparte cupos por su lado.
+- **Apps que excluyen.** Los adultos mayores, que más citas necesitan, son quienes menos saben usarlas.
 
 La solución cumple el enunciado y responde a estas tres causas.
 
 ---
 
-## 🚀 Características Principales
+## Características Principales
 
-- **🗂️ CRUD completo**: pacientes, médicos, sedes y salas, con borrado lógico
-- **📅 Citas con estados**: programada, confirmada, ofrecida, cancelada, atendida, no asistió
-- **🛡️ Cero cruces garantizados por la base de datos**: médico, sala y paciente, incluso con reservas simultáneas
-- **🎯 Disponibilidad única**: la misma fuente de cupos para la API, la web y el asistente
-- **⏳ Lista de espera automática**: el cupo liberado se reserva al primero de la fila
-- **🔔 Recordatorios**: confirmar o cancelar en un clic desde el correo
-- **🤖 Asistente Sofía**: agente con LangChain y LangGraph que agenda, cancela y ofrece la lista de espera
-- **♿ Accesibilidad como dato**: canal preferido y atención asistida por paciente
-- **✅ 33 pruebas automáticas**, incluida una de concurrencia
+- **CRUD completo**: pacientes, médicos, sedes y salas, con borrado lógico
+- **Citas con estados**: programada, confirmada, ofrecida, cancelada, atendida, no asistió
+- **Cero cruces garantizados por la base de datos**: médico, sala y paciente, incluso con reservas simultáneas
+- **Disponibilidad única**: la misma fuente de cupos para la API, la web y el asistente
+- **Lista de espera automática**: el cupo liberado se reserva al primero de la fila
+- **Recordatorios**: confirmar o cancelar en un clic desde el correo
+- **Asistente Nora**: agente con LangChain y LangGraph que agenda, cancela y ofrece la lista de espera
+- **Accesibilidad como dato**: canal preferido y atención asistida por paciente
+- **33 pruebas automáticas**, incluida una de concurrencia
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## Arquitectura del Sistema
 
 ```mermaid
 graph TB
     subgraph "Canales"
         W[Página web del paciente]
-        A[Asistente Sofía<br/>LangChain + LangGraph]
+        A[Asistente Nora<br/>LangChain + LangGraph]
         C[Correo<br/>enlaces firmados]
         WA[WhatsApp / call center<br/>adaptador futuro]
     end
@@ -81,10 +81,10 @@ graph TB
 
 ```
 agendamiento-citas/
-├── 🗄️ sql/
+├── sql/
 │   └── 001_esquema.sql          # Esquema con todas sus restricciones
 │
-├── ⚙️ app/
+├── app/
 │   ├── services/                # Reglas de negocio
 │   │   ├── citas.py             # Agendar, cancelar, reprogramar, estados
 │   │   ├── disponibilidad.py    # Fuente única de cupos
@@ -92,21 +92,21 @@ agendamiento-citas/
 │   │   ├── notificaciones.py    # Canales y plantillas de mensajes
 │   │   └── tokens.py            # Enlaces firmados del correo
 │   ├── routers/                 # Endpoints REST
-│   ├── agente/sofia.py          # Asistente conversacional
+│   ├── agente/nora.py          # Asistente conversacional
 │   ├── static/index.html        # Página accesible del paciente
 │   └── jobs.py                  # Recordatorios y vencimiento de ofertas
 │
-├── 🧪 tests/                    # 33 pruebas automáticas
-├── 📋 docs/decisiones.md        # Cada decisión con sus alternativas
-├── 🌱 scripts/semilla.py        # Datos de demostración
-└── 🐳 docker-compose.yml        # PostgreSQL + Mailpit + API
+├── tests/                       # 33 pruebas automáticas
+├── docs/decisiones.md           # Cada decisión con sus alternativas
+├── scripts/semilla.py           # Datos de demostración
+└── docker-compose.yml           # PostgreSQL + Mailpit + API
 ```
 
 ---
 
-## 🔄 Flujos Principales
+## Flujos Principales
 
-### 1. ⏳ Un cupo cancelado llega a la lista de espera
+### 1. Un cupo cancelado llega a la lista de espera
 
 ```mermaid
 sequenceDiagram
@@ -130,12 +130,12 @@ sequenceDiagram
     end
 ```
 
-### 2. 🤖 El asistente agenda una cita
+### 2. El asistente agenda una cita
 
 ```mermaid
 sequenceDiagram
     participant P as Paciente
-    participant S as Sofía (LLM)
+    participant S as Nora (LLM)
     participant H as Herramientas
     participant DB as PostgreSQL
 
@@ -156,7 +156,7 @@ sequenceDiagram
     end
 ```
 
-### 3. 🔁 Estados de una cita
+### 3. Estados de una cita
 
 ```mermaid
 stateDiagram-v2
@@ -180,7 +180,7 @@ Solo `ofrecida`, `programada` y `confirmada` ocupan el cupo.
 
 ---
 
-## 🗄️ Base de Datos
+## Base de Datos
 
 Las reglas que evitan inconsistencias viven en el esquema, no solo en el código:
 
@@ -212,7 +212,7 @@ CONSTRAINT cancelar_con_motivo CHECK (estado <> 'cancelada' OR motivo_cancelacio
 
 ---
 
-## 🚀 Instalación y Configuración
+## Instalación y Configuración
 
 ### Prerrequisitos
 
@@ -249,9 +249,9 @@ docker compose up --build
 
 | Qué | Dónde |
 |---|---|
-| 📖 Documentación interactiva de la API | http://localhost:8000/docs |
-| 💬 Página del paciente con el asistente | http://localhost:8000 |
-| 📬 Correos enviados | http://localhost:8025 |
+| Documentación interactiva de la API | http://localhost:8000/docs |
+| Página del paciente con el asistente | http://localhost:8000 |
+| Correos enviados | http://localhost:8025 |
 
 Se cargan datos de demostración: 2 sedes, 5 consultorios, 5 médicos, 4 pacientes y una agenda de cardiología casi llena.
 
@@ -263,9 +263,9 @@ Se cargan datos de demostración: 2 sedes, 5 consultorios, 5 médicos, 4 pacient
 
 ---
 
-## 🔧 Configuración Avanzada
+## Configuración Avanzada
 
-### 🤖 Asistente Sofía
+### Asistente Nora
 
 Agregue la llave en `.env` y entre a http://localhost:8000 con el documento `41000111` (Rosa, atención asistida) o `1020304050` (Daniel):
 
@@ -276,7 +276,7 @@ LLM_MODELO=anthropic:claude-haiku-4-5   # intercambiable, ej. openai:gpt-4o-mini
 
 Sin llave, todo lo demás funciona.
 
-### 📬 Correos a un Gmail real
+### Correos a un Gmail real
 
 Gmail exige una contraseña de aplicación (Cuenta de Google → Seguridad → Verificación en dos pasos → Contraseñas de aplicaciones):
 
@@ -292,7 +292,7 @@ CORREO_REDIRIGIR_A=su.correo@gmail.com   # demo: todos los correos llegan aquí
 
 ---
 
-## 🧠 Decisiones de Diseño
+## Decisiones de Diseño
 
 Lo más importante de este proyecto es por qué está hecho así. El detalle completo, con contexto y consecuencias, está en [docs/decisiones.md](docs/decisiones.md).
 
@@ -312,16 +312,16 @@ Lo más importante de este proyecto es por qué está hecho así. El detalle com
 
 ---
 
-## 🔒 Seguridad
+## Seguridad
 
-- **🛡️ Reglas en la base de datos**: ningún canal puede saltarse las validaciones, ni con acceso directo.
-- **🔑 Enlaces firmados**: cada enlace del correo lleva la cita y la acción firmadas con un secreto del servidor, y caduca.
-- **👤 Identidad por contexto en el agente**: el paciente viaja en el contexto de ejecución, no como parámetro del modelo. Sofía no puede consultar ni cancelar citas de otra persona.
-- **🚫 Sin datos sensibles en el repositorio**: `.env` está en `.gitignore`.
+- **Reglas en la base de datos**: ningún canal puede saltarse las validaciones, ni con acceso directo.
+- **Enlaces firmados**: cada enlace del correo lleva la cita y la acción firmadas con un secreto del servidor, y caduca.
+- **Identidad por contexto en el agente**: el paciente viaja en el contexto de ejecución, no como parámetro del modelo. Nora no puede consultar ni cancelar citas de otra persona.
+- **Sin datos sensibles en el repositorio**: `.env` está en `.gitignore`.
 
 ---
 
-## 🧪 Pruebas
+## Pruebas
 
 ```bash
 pip install -r requirements.txt
@@ -343,17 +343,17 @@ DATABASE_URL=postgresql+psycopg://postgres:postgres@localhost:5432/citas_test py
 
 ---
 
-## 🗺️ Qué haría con más tiempo
+## Qué haría con más tiempo
 
-- **🩺 Agenda del médico por sede**: turnos de qué días y en qué sede atiende cada médico.
-- **🔐 Autenticación por rol** (paciente, recepción, administración) y verificación por código antes de hablar con el asistente.
-- **💬 WhatsApp real** como un adaptador más, con notas de voz transcritas.
-- **📈 Métricas de gestión**: inasistencia, cupos recuperados y tiempo hasta la primera cita disponible.
-- **🧪 Evaluaciones del asistente**: conversaciones de prueba con resultados esperados en cada cambio del prompt o del modelo.
-- **🗃️ Migraciones versionadas** con Alembic.
+- **Agenda del médico por sede**: turnos de qué días y en qué sede atiende cada médico.
+- **Autenticación por rol** (paciente, recepción, administración) y verificación por código antes de hablar con el asistente.
+- **WhatsApp real** como un adaptador más, con notas de voz transcritas.
+- **Métricas de gestión**: inasistencia, cupos recuperados y tiempo hasta la primera cita disponible.
+- **Evaluaciones del asistente**: conversaciones de prueba con resultados esperados en cada cambio del prompt o del modelo.
+- **Migraciones versionadas** con Alembic.
 
 ---
 
-## 📄 Licencia
+## Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.

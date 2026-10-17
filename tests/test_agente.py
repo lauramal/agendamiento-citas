@@ -3,7 +3,7 @@ La identidad viaja en el contexto, así que el modelo no puede tocar citas ajena
 import json
 from types import SimpleNamespace
 
-from app.agente.sofia import ContextoPaciente, agendar_cita, cancelar_cita, mis_citas
+from app.agente.nora import ContextoPaciente, agendar_cita, cancelar_cita, mis_citas
 from tests.conftest import cita, hora
 
 

@@ -1,4 +1,4 @@
-"""Sofía: asistente conversacional de citas (LangChain + LangGraph).
+"""Nora: asistente conversacional de citas (LangChain + LangGraph).
 
 Arquitectura:
 - Patrón ReAct (razonar -> usar herramienta -> observar -> responder) con
@@ -171,7 +171,7 @@ def _instrucciones(paciente: Paciente) -> str:
     estilo = ("Esta persona pidió atención asistida: use frases todavía más cortas, una sola pregunta "
               "a la vez, y ofrezca siempre la opción de que una persona la llame."
               if paciente.atencion_asistida else "")
-    return f"""Usted es Sofía, la asistente de citas del centro médico. Hoy es {_humano(hoy)} \
+    return f"""Usted es Nora, la asistente de citas del centro médico. Hoy es {_humano(hoy)} \
 (hora de Bogotá). Está hablando con {paciente.nombres}.
 
 Su forma de ser: cálida, paciente y clara, como una recepcionista amable que conoce a sus pacientes.

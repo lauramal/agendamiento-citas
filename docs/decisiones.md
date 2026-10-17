@@ -88,7 +88,7 @@ Cada decisión sigue el mismo formato: el contexto, las opciones que evalué, la
 
 ---
 
-## D8. El asistente (Sofía)
+## D8. El asistente (Nora)
 
 **Opciones.**
 1. Chatbot de flujos fijos (estilo Dialogflow con intenciones).
